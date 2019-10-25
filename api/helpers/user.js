@@ -1,13 +1,14 @@
+/**
+ * Helper 'user.js' can get user from db by jwt
+ */
+
 const jwt = require('jsonwebtoken');
 
 module.exports = {
 
-
   friendlyName: 'User',
 
-
-  description: 'User something.',
-
+  description: 'Get user by jwt.',
 
   inputs: {
     req: {
@@ -17,15 +18,7 @@ module.exports = {
     }
   },
 
-
-  exits: {
-
-    success: {
-      description: 'All done.',
-    },
-
-  },
-
+  exits: {},
 
   fn: async function (inputs) {
     const token = inputs.req.headers.authorization.split('Bearer ')[1];

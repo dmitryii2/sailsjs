@@ -40,7 +40,7 @@ module.exports = {
   beforeCreate: function(record, next) {
     // Compare password field with confirmation field
     if (record.password !== record.confirmation) {
-      // throw error if they are different
+      // return error if they are different
       return next(buildUsageError('E_INVALID_NEW_RECORD', 'The password confirmation does not match.', 'invoice'));
     }
     // Remove confirmation field from record before save in db

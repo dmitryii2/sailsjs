@@ -7,7 +7,7 @@ module.exports = {
   friendlyName: 'Login',
 
 
-  description: 'Login something.',
+  description: 'Login action.',
 
 
   inputs: {
@@ -48,6 +48,7 @@ module.exports = {
       }
     }
 
+    // if user sent wrong login or pass then throw 'notAuthorized' response (401)
     throw {
       notAuthorized: {
         errors: ['Incorrect login or password'],
