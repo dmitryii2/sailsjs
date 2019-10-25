@@ -18,6 +18,7 @@ module.exports.policies = {
   ***************************************************************************/
 
   // '*': true,
-  'user/*': 'authGuard'
+  'user/*': 'authGuard',
+  'posts/*': 'authGuard'
 
 };

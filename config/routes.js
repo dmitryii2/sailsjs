@@ -20,10 +20,23 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': { view: 'pages/homepage' },
+
+  /* Auth */
   'POST /api/v1/login': 'login',
   'POST /api/v1/register': 'register',
+
+  /* Account */
   'PATCH /api/v1/user': 'user/update',
   'POST /api/v1/user/avatar': 'user/avatar',
+
+  /* Posts */
+  'GET /api/v1/posts': 'posts/find',
+  'POST /api/v1/posts': 'posts/create',
+  'PATCH /api/v1/posts/:id': 'posts/update',
+  'DELETE /api/v1/posts/:id': 'posts/destroy',
+
+  /* Comments */
+
 
 
   /***************************************************************************
