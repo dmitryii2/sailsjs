@@ -22,44 +22,25 @@ module.exports.routes = {
   '/': { view: 'pages/homepage' },
 
   /* Auth */
-  'POST /api/v1/login': {
-    action: 'login',
-    swagger: {
-      methods: ['POST'],
-      summary: 'Update Groups ',
-      description: 'Update Groups Description',
-      produces: [
-        'application/json'
-      ],
-      tags: [
-        'Groups'
-      ],
-      responses: {
-        '200': {
-          description: 'Updated Group',
-          schema: 'Group' // api/model/Group.js
-        }
-      },
-      parameters: [
-        'Group' // api/model/Group.js
-      ]
-
-    }
-  },
-  'POST /api/v1/register': 'register',
+  'POST /api/v1/login': 'login',                          // Authorization
+  'POST /api/v1/register': 'register',                    // Registration
 
   /* Account */
-  'PATCH /api/v1/user': 'user/update',
-  'POST /api/v1/user/avatar': 'user/avatar',
+  'PATCH /api/v1/user': 'user/update',                    // Update account information
+  'POST /api/v1/user/avatar': 'user/avatar',              // Upload user avatar
 
   /* Posts */
-  'GET /api/v1/posts': 'posts/find',
-  'POST /api/v1/posts': 'posts/create',
-  'PATCH /api/v1/posts/:id': 'posts/update',
-  'DELETE /api/v1/posts/:id': 'posts/destroy',
+  'GET /api/v1/posts': 'posts/find',                      // Get all posts
+  'POST /api/v1/posts': 'posts/create',                   // Create post
+  'PATCH /api/v1/posts/:id': 'posts/update',              // Update post
+  'DELETE /api/v1/posts/:id': 'posts/destroy',            // Destroy post
 
   /* Comments */
-
+  'GET /api/v1/posts/:postId/comments': 'comments/find',  // Get all comments of post
+  'POST /api/v1/comments': 'comments/create',             // Create comment
+  'PATCH /api/v1/comments/:id': 'comments/update',        // Update comment
+  'DELETE /api/v1/comments/:id': 'comments/destroy',      // Destroy comment
+  'PATCH /api/v1/comments/:id/like': 'comments/like',     // Like/Unlike comment
 
 
   /***************************************************************************

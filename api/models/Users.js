@@ -35,6 +35,11 @@ module.exports = {
       required: true,
     },
 
+    avatar: {
+      type: 'string',
+      defaultsTo: 'default.jpg',
+    },
+
   },
 
   beforeCreate: function(record, next) {

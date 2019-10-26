@@ -145,8 +145,8 @@
   "paths": {
     "/api/v1/login": {
       "post": {
-        "summary": "Update Groups ",
-        "description": "Update Groups Description",
+        "summary": "",
+        "description": "",
         "tags": [
           ""
         ],
@@ -159,12 +159,6 @@
         "parameters": [
           {
             "$ref": "#/parameters/TokenHeaderParam"
-          },
-          {
-            "in": "parameters",
-            "required": false,
-            "type": "string",
-            "description": "This is a custom param for undefined"
           }
         ],
         "responses": {

@@ -58,9 +58,8 @@ module.exports = {
     }
     /**
      * Create user in db
-     * also i set default avatar as 'default.jpg'
      */
-    return await Users.create({ ...inputs, avatar: 'default.jpg' }).fetch();
+    return await Users.create(inputs).fetch();
   }
 
 

@@ -36,7 +36,7 @@ module.exports = {
     // if user was not send `page` then it will be set 1 by default
     let page = !_.isUndefined(inputs.page) ? inputs.page : 1;
     // get posts count from db and divide by `limit` to get `count`
-    const count = Math.floor(await Posts.count() / limit) + 1;
+    const count = Math.ceil(await Posts.count() / limit);
     // It is common .find() with .limit() and .skip()
     const posts = await Posts.find().limit(limit).skip(limit * (page - 1));
     return {

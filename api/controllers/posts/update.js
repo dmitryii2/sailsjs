@@ -30,7 +30,7 @@ module.exports = {
     /**
      * try to update post in db by `id` (const postId) and `createdBy` (const id) fields
      * `createdBy` field contains user ID
-     * If mongo will not find record by this conditions then `post` will be undefined
+     * If mongo will not find record by this conditions then `const post` will be undefined
      */
     const post = await Posts.updateOne({ id: postId, createdBy: id }).set(inputs);
     if (_.isUndefined(post)) {
