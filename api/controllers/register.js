@@ -56,10 +56,12 @@ module.exports = {
     if ( !_.isUndefined(hasUserWithThatEmail) ) {
       throw { badRequest: 'This email already taken.' };
     }
+
     /**
      * Create user in db
      */
-    return await Users.create(inputs).fetch();
+    await Users.create(inputs).fetch();
+    return { success: true };
   }
 
 

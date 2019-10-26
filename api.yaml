@@ -1,0 +1,659 @@
+openapi: '3.0.0'
+info:
+  title: SailsJS for Omaga-R
+  description: My example documentation
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:1337
+  - url: https://localhost:1337
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+externalDocs:
+  url: 'http://theophilus.ziippii.com'
+tags:
+  - name: Auth
+  - name: Account
+  - name: Comments
+  - name: Posts
+
+definitions:
+  comments:
+    properties:
+      postId:
+        type: string
+      message:
+        type: string
+      createdBy:
+        type: string
+      likes:
+        type: string
+    required:
+      - postId
+      - message
+      - createdBy
+  posts:
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      createdBy:
+        type: string
+    required:
+      - title
+      - description
+      - createdBy
+  users:
+    properties:
+      email:
+        type: string
+      confirmation:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+      avatar:
+        type: string
+    required:
+      - email
+      - confirmation
+      - password
+      - username
+parameters:
+  WhereQueryParam:
+    in: query
+    name: where
+    required: false
+    type: string
+    description: >-
+      This follows the standard from
+      http://sailsjs.com/documentation/reference/blueprint-api/find-where
+  LimitQueryParam:
+    in: query
+    name: limit
+    required: false
+    type: integer
+    description: >-
+      The maximum number of records to send back (useful for pagination).
+      Defaults to undefined
+  SkipQueryParam:
+    in: query
+    name: skip
+    required: false
+    type: integer
+    description: The number of records to skip (useful for pagination).
+  SortQueryParam:
+    in: query
+    name: sort
+    required: false
+    type: string
+    description: >-
+      The sort order. By default, returned records are sorted by primary key
+      value in ascending order. e.g. ?sort=lastName%20ASC
+  PopulateQueryParam:
+    in: query
+    name: populate
+    required: false
+    type: string
+    description: >-
+      check for better understanding ->
+      http://sailsjs.com/documentation/reference/blueprint-api/find-where
+  PageQueryParam:
+    in: query
+    name: page
+    required: false
+    type: integer
+    description: This helps with pagination and when the limit is known
+  SelectQueryParam:
+    in: query
+    name: select
+    required: false
+    type: string
+    description: 'This helps with what to return for the user and its "," delimited'
+  TokenHeaderParam:
+    in: header
+    name: Bearer token
+    required: true
+    type: string
+    description: token which you got after authorization
+  IDPathParam:
+    in: path
+    name: id
+    required: true
+    type: string
+    description: This is to identify a particular object out
+  PerPageQueryParam:
+    in: query
+    name: perPage
+    required: false
+    type: integer
+    description: This helps with pagination and when the limit is known for pagify
+
+paths:
+  /api/v1/login:
+    post:
+      summary: 'Authorization'
+      description: 'Send login and password to get JWT for working with API'
+      tags:
+        - Auth
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Email address
+                password:
+                  type: string
+                  description: Password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  token: YOUR-GENERATED-JWT
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - "\"email\" is required but it was not defined."
+                    - "\"password\" is required, but it was not defined."
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - Incorrect login or password
+  /api/v1/register:
+    post:
+      summary: 'Registration'
+      description: 'Create new user'
+      tags:
+        - Auth
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Email address
+                password:
+                  type: string
+                  description: Password
+                confirmation:
+                  type: string
+                  description: Password confirmation
+                username:
+                  type: string
+                  description: Username
+              required:
+                - email
+                - password
+                - confirmation
+                - username
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - "\"email\" is required, but it was not defined."
+                    - "\"confirmation\" is required, but it was not defined."
+                    - "\"password\" is required, but it was not defined."
+                    - "\"username\" is required, but it was not defined."
+  /api/v1/user:
+    patch:
+      summary: 'Update account info'
+      description: 'You can change info about current user. For example username, ... etc.'
+      tags:
+        - 'Account'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  createdAt: 1572085398044
+                  updatedAt: 1572097014196
+                  id: 5db41e96a824f864a13f0337
+                  email: test2@mail.ru
+                  password: $2b$10$e9HqeY.ZLJkcy46./BwKYe1TmOH31JeKpZpEc7VT5bSqL10a8U0PS
+                  username: '123'
+                  avatar: default.jpg
+  /api/v1/user/avatar:
+    post:
+      summary: 'Change user avatar'
+      description: 'File must be image (.jpg, .png) and size of file do not exceed 10MB'
+      tags:
+        - 'Account'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: File
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  createdAt: 1572085398044
+                  updatedAt: 1572097014196
+                  id: 5db41e96a824f864a13f0337
+                  email: test2@mail.ru
+                  password: $2b$10$e9HqeY.ZLJkcy46./BwKYe1TmOH31JeKpZpEc7VT5bSqL10a8U0PS
+                  username: '123'
+                  avatar: default.jpg
+  /api/v1/posts:
+    get:
+      summary: 'Get all posts'
+      tags:
+        - 'Posts'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: "Page of list of posts"
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 5
+            minimum: 1
+            maximum: 25
+          description: "Count of posts per page"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  count: 2
+                  page: 1
+                  limit: 5
+                  posts:
+                    - createdAt: 1572023167206
+                      updatedAt: 1572023167206
+                      id: 5db32b7fb5c18a6220622c9f
+                      title: "Post 1"
+                      description: "Example 1"
+                      createdBy: 5db2f2b8de77c536e34b3175
+                    - createdAt: 1572023167583
+                      updatedAt: 1572025030918
+                      id: 5db32b7fb5c18a6220622ca0
+                      title: "Post 2"
+                      description: "Example 2"
+                      createdBy: 5db2f2b8de77c536e34b3175
+                    - createdAt: 1572023168211
+                      updatedAt: 1572023168211
+                      id: 5db32b80b5c18a6220622ca1
+                      title: "Post 3"
+                      description: "Example 3"
+                      createdBy: 5db2f2b8de77c536e34b3175
+                    - createdAt: 1572023168804
+                      updatedAt: 1572023168804
+                      id: 5db32b80b5c18a6220622ca2
+                      title: "Post 4"
+                      description: "Example 4"
+                      createdBy: 5db2f2b8de77c536e34b3175
+                    - createdAt: 1572023169304
+                      updatedAt: 1572023169304
+                      id: 5db32b81b5c18a6220622ca3
+                      title: "Post 5"
+                      description: "Example 5"
+                      createdBy: 5db2f2b8de77c536e34b3175
+    post:
+      summary: 'Create new post'
+      tags:
+        - 'Posts'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of post
+                description:
+                  type: string
+                  description: Description of post
+              required:
+                - title
+                - description
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  createdAt: 1572098847650
+                  updatedAt: 1572098847650
+                  id: 5db4531f48c6a724f9422315
+                  title: Test Post
+                  description: Test Description
+                  createdBy: 5db41e96a824f864a13f0337
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - '"title" is required, but it was not defined.'
+                    - '"description" is required, but it was not defined.'
+  '/api/v1/posts/{id}':
+    patch:
+      summary: 'Update post'
+      description: ''
+      tags:
+        - 'Posts'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: This is a path param for id
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title of post
+                description:
+                  type: string
+                  description: Description of post
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  createdAt: 1572098847650
+                  updatedAt: 1572098847650
+                  id: 5db4531f48c6a724f9422315
+                  title: Edited Post
+                  description: Test Description
+                  createdBy: 5db41e96a824f864a13f0337
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - Post not found
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - forbidden
+    delete:
+      summary: 'Delete post'
+      description: ''
+      tags:
+        - 'Posts'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: This is a path param for id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - Post not found
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  errors:
+                    - forbidden
+  '/api/v1/posts/{postId}/comments':
+    get:
+      summary: "Get post's comments"
+      description: ''
+      tags:
+        - 'Comments'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          schema:
+            type: string
+          description: This is a path param for postId
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: Count of pages
+                  page:
+                    type: integer
+                    description: Current page
+                  limit:
+                    type: integer
+                    description: Limit
+                  comments:
+                    type: array
+                    description: comments
+                    items:
+                      type: object
+                      properties:
+                        createdAt:
+                          type: integer
+                        updateAt:
+                          type: integer
+                        # etc...
+                example:
+                  count: 1
+                  page: 1
+                  limit: 5
+                  comments:
+                    - createdAt: 1572099484848
+                      updatedAt: 1572099484848
+                      id: 5db4559c48c6a724f9422316
+                      postId: 5db4531f48c6a724f9422315
+                      message: Comment test
+                      createdBy: 5db41e96a824f864a13f0337
+                      likes: []
+                      likesCount: 0
+
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  /api/v1/comments:
+    post:
+      summary: ''
+      description: ''
+      tags:
+        - 'Comments'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/parameters/TokenHeaderParam'
+      responses:
+        '200':
+          description: The requested resource
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  '/api/v1/comments/{id}':
+    patch:
+      summary: ''
+      description: ''
+      tags:
+        - 'Comments'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: This is a path param for id
+        - $ref: '#/parameters/TokenHeaderParam'
+      responses:
+        '200':
+          description: The requested resource
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: ''
+      description: ''
+      tags:
+        - 'Comments'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: This is a path param for id
+        - $ref: '#/parameters/TokenHeaderParam'
+      responses:
+        '200':
+          description: The requested resource
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  '/api/v1/comments/{id}/like':
+    patch:
+      summary: ''
+      description: ''
+      tags:
+        - 'Comments'
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: This is a path param for id
+        - $ref: '#/parameters/TokenHeaderParam'
+      responses:
+        '200':
+          description: The requested resource
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error

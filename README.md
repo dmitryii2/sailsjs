@@ -2,6 +2,9 @@
 
 a [Sails v1](https://sailsjs.com) application
 
+### Documentation
+
+API documentation in api.yaml
 
 ### Links
 
