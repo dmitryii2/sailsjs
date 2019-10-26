@@ -22,7 +22,30 @@ module.exports.routes = {
   '/': { view: 'pages/homepage' },
 
   /* Auth */
-  'POST /api/v1/login': 'login',
+  'POST /api/v1/login': {
+    action: 'login',
+    swagger: {
+      methods: ['POST'],
+      summary: 'Update Groups ',
+      description: 'Update Groups Description',
+      produces: [
+        'application/json'
+      ],
+      tags: [
+        'Groups'
+      ],
+      responses: {
+        '200': {
+          description: 'Updated Group',
+          schema: 'Group' // api/model/Group.js
+        }
+      },
+      parameters: [
+        'Group' // api/model/Group.js
+      ]
+
+    }
+  },
   'POST /api/v1/register': 'register',
 
   /* Account */
